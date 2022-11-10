@@ -1,0 +1,49 @@
+import string
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, EmailField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
+
+data_required = DataRequired('Заполните это поле')
+email = Email('Некорректный email')
+
+
+class LoginForm(FlaskForm):
+    login = StringField('Логин', validators=[data_required])
+    password = PasswordField('Пароль', validators=[data_required])
+    submit = SubmitField('Войти')
+
+
+class RegisterForm(FlaskForm):
+    email = EmailField('Почта', validators=[email])
+    login = StringField('Логин', validators=[data_required, Length(min=6, message='Логин должен быть не '
+                                                                                  'менее 6 символов')])  # TODO myself validator between data_required & Length(min=6)
+    password1 = PasswordField('Пароль', validators=[data_required, Length(min=8,
+                                                                          message='Пароль должен быть не '
+                                                                                  'менее 8 символов')])  # TODO myself validator
+    password2 = PasswordField('Пароль ещё раз', validators=[data_required, EqualTo('password1',
+                                                                                   message='Пароли должны совпадать')])
+    submit = SubmitField('Зарегистрироваться')
+
+    # Validate login
+    @staticmethod
+    def validate_login(_, login):
+        if login.data[0].lower() not in string.ascii_lowercase:
+            raise ValidationError("Логин должен начинаться с буквы")
+        if len(set(login.data).intersection(set(string.ascii_letters + string.digits + '_'))) != len(set(login.data)):
+            raise ValidationError("Логин должен содержать только символы латинского алфавита, цифры и знак \"_\"")
+
+        return True
+
+    # Validate password
+    @staticmethod
+    def validate_password1(_, password):
+        if not (len(set(password.data).intersection(set(string.ascii_uppercase))) >= 1 and len(
+                set(password.data).intersection(set(string.ascii_lowercase))) >= 1 and len(
+                set(password.data).intersection(set(string.digits))) >= 1 and len(
+                set(password.data).intersection(set(string.punctuation + "%$#@&*^|\\/~[]{}"))) >= 1):
+            raise ValidationError(
+                "Пароль должен содержать хотя бы 1 строчную и заглавную буквы латинского алфавита, цифру " \
+                "и один знаков пунктуации или один из символов: %, $, #, @, &, *, ^, |, \\, /, ~, [, ], {, }")
+
+        return True

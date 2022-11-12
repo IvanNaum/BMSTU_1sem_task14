@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
     <style>
         .center-screen {
@@ -51,29 +51,41 @@
     <div class="container">
         <div style="display: flex; align-items: center; justify-content: space-between">
             <div class="fs-5">
-                Flask Shop
+                <a class="text-decoration-none text-light" href="{{ url_for('index') }}">Flask Shop</a>
             </div>
             {% if not current_user.is_authenticated %}
             <div>
-                <a href="{{ url_for('login') }}" class="btn btn-outline-light" style="margin-right: 1rem">Вход</a>
-                <a href="{{ url_for('register') }}" class="btn btn-warning">Регистрация</a>
+                <a href="{{ url_for('login_view') }}" class="btn btn-outline-light" style="margin-right: 1rem">Вход</a>
+                <a href="{{ url_for('register_view') }}" class="btn btn-warning">Регистрация</a>
             </div>
             {% else %}
-            <div class="fs-4">
-                {{ current_user.login }}
+            <div style="display: flex; align-items: center; justify-content: space-between">
+                <div class="fs-4">
+                    {{ current_user.login }}
+                </div>
+                <div class="ms-4">
+                    {{ 'Администратор' if current_user.is_admin else 'Обычный пользователь' }}
+                </div>
             </div>
+
             <div>
-                <a href="{{ url_for('logout') }}" class="btn btn-danger">Выход</a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('add_good') }}" class="btn btn-primary">Добавить Товар</a>
+                {% endif %}
+                <a href="{{ url_for('logout_view') }}" class="btn btn-danger">Выход</a>
             </div>
             {% endif %}
         </div>
     </div>
 </header>
 
-<div class='container' style="margin-top: 75px">{% block content %}{% endblock %}</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+<div class='container'>{% block content %}{% endblock %}</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
         crossorigin="anonymous"></script>
+
 </body>
 
 </html>

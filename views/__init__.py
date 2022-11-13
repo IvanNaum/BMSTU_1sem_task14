@@ -1,7 +1,7 @@
 from flask import Blueprint
 
-import views.auth
-import views.goods
-import views.index
+from . import auth
+from . import goods
+from . import index
 
 my_view = Blueprint('my_view', __name__)

@@ -11,7 +11,6 @@
     <style>
         .center-screen {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
@@ -70,7 +69,7 @@
 
             <div>
                 {% if current_user.is_admin %}
-                <a href="{{ url_for('add_good') }}" class="btn btn-primary">Добавить Товар</a>
+                <a href="{{ url_for('add_good_view') }}" class="btn btn-primary">Добавить Товар</a>
                 {% endif %}
                 <a href="{{ url_for('logout_view') }}" class="btn btn-danger">Выход</a>
             </div>

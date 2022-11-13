@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="center-screen" style="padding-top: 90px">
+    <div style="display: flex">
+        <div style="width: 600px">
+            <img class="img-fluid rounded" src="{{ url_for('static', filename=good.photo) }}" alt="">
+        </div>
+        <div class="mt-1 ms-4" style="display: flex; flex-direction: column;">
+            <h3>{{ good.name }} <span class="badge bg-warning">{{ good.price }}₽</span></h3>
+            <p class="fw-lighter"> {{ good.category }} </p>
+            <p>Производитель: {{ good.manufacturer }}</p>
+            <p class="text-break" style="max-width: 300px">{{ good.description }}</p>
+
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('edit_good_view', good_id=good.id) }}" class="btn btn-warning mt-5 mb-1">Резактировать Товар</a>
+            <a href="{{ url_for('delete_good_view', good_id=good.id) }}" class="btn btn-danger">Удалить Товар</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

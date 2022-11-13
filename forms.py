@@ -62,11 +62,10 @@ class RegisterForm(FlaskForm):
         return True
 
 
-class AddGoodsForm(FlaskForm):
+class GoodsForm(FlaskForm):
     name = StringField('Название', validators=[data_required])
     description = TextAreaField('Описание', validators=[data_required])
     category = StringField('Категория', validators=[data_required])
     manufacturer = StringField('Производитель', validators=[data_required])
     price = IntegerField('Цена', validators=[data_required])
     photo = FileField('Фото', validators=[FileRequired()])
-    submit = SubmitField('Добавить')

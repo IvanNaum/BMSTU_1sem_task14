@@ -1,13 +1,13 @@
 import os
 
-from flask import render_template, abort, redirect, url_for
-from flask_login import current_user
+from flask import render_template, abort, redirect, url_for, request
+from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 from werkzeug.utils import secure_filename
 
 from app import app, db
 from forms import GoodsForm
-from models import Good
+from models import Good, Like, Comment
 
 
 @app.route('/goods')
@@ -19,14 +19,16 @@ def goods_view():
 @app.route('/goods/<int:good_id>')
 def good_view(good_id):
     good = Good.query.filter_by(id=good_id).first()
-    print(good.photo)
-    print(url_for('static', filename='photos/{}'.format(good.photo)))
+
+    like = Like.query.filter_by(user_id=current_user.id, good_id=good_id).first().score
+    comments = Comment.query.filter_by(user_id=current_user.id, good_id=good_id)
     good.photo = f'photos/{good.photo}'
 
-    return render_template('good.html', good=good, title=good.name)
+    return render_template('good.html', good=good, title=good.name, like=like, comments=comments)
 
 
 @app.route('/goods/<int:good_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_good_view(good_id):
     if not current_user.is_admin:
         abort(403)
@@ -67,11 +69,13 @@ def edit_good_view(good_id):
 
 
 @app.route('/goods/<int:good_id>/delete')
+@login_required
 def delete_good_view(good_id):
     if not current_user.is_admin:
         abort(403)
 
     good = Good.query.filter_by(id=good_id).first()
+    # TODO delete all comments and likes
     db.session.delete(good)
     db.session.commit()
 
@@ -79,6 +83,7 @@ def delete_good_view(good_id):
 
 
 @app.route('/add_good', methods=['GET', 'POST'])
+@login_required
 def add_good_view():
     if not current_user.is_admin:
         abort(403)
@@ -103,4 +108,36 @@ def add_good_view():
 
     return render_template("add_good.html", form=form, title="Добавить товар")
 
+
+@app.route('/goods/like', methods=['POST'])
+@login_required
+def like_view():
+    data = request.get_json()
+    user_id = data['user_id']
+    good_id = data['good_id']
+    score = data['score']
+
+    if like := Like.query.filter_by(user_id=user_id, good_id=good_id).first():
+        like.score = score
+    else:
+        Like.add(user_id=user_id, good_id=good_id, score=score)
+    db.session.commit()
+
+    return "{'status': 'success'}"
+
+
+@app.route('/goods/comment', methods=['POST'])
+@login_required
+def comment_view():
+    data = request.get_json()
+    user_id = data['user_id']
+    good_id = data['good_id']
+    comment = data['comment']
+
+    Comment.add(user_id=user_id, good_id=good_id, comment=comment)
+    db.session.commit()
+
+    return "{'status': 'success'}"
+
+# TODO AJAX add comment
 # TODO AJAX get category

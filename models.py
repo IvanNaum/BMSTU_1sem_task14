@@ -43,4 +43,37 @@ class Good(db.Model):
         db.session.add(good)
         db.session.commit()
 
-    # TODO AJAX requariment
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    good_id = db.Column(db.Integer(), db.ForeignKey('good.id'))
+    score = db.Column(db.Integer())
+
+    @staticmethod
+    def add(user_id, good_id, score):
+        like = Like()
+        like.user_id = user_id
+        like.good_id = good_id
+        like.score = score
+
+        db.session.add(like)
+        db.session.commit()
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    good_id = db.Column(db.Integer(), db.ForeignKey('good.id'))
+    comment = db.Column(db.String())
+    user = db.relationship('User', backref='User')
+
+    @staticmethod
+    def add(user_id, good_id, comment):
+        comment = Comment()
+        comment.user_id = user_id
+        comment.good_id = good_id
+        comment.score = comment
+
+        db.session.add(comment)
+        db.session.commit()

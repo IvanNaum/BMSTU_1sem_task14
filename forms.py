@@ -20,10 +20,10 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = EmailField('Почта', validators=[email])
     login = StringField('Логин', validators=[data_required, Length(min=6, message='Логин должен быть не '
-                                                                                  'менее 6 символов')])  # TODO myself validator between data_required & Length(min=6)
+                                                                                  'менее 6 символов')])
     password1 = PasswordField('Пароль', validators=[data_required, Length(min=8,
                                                                           message='Пароль должен быть не '
-                                                                                  'менее 8 символов')])  # TODO myself validator
+                                                                                  'менее 8 символов')])
     password2 = PasswordField('Пароль ещё раз', validators=[data_required, EqualTo('password1',
                                                                                    message='Пароли должны совпадать')])
     submit = SubmitField('Зарегистрироваться')

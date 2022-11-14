@@ -65,15 +65,15 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     good_id = db.Column(db.Integer(), db.ForeignKey('good.id'))
-    comment = db.Column(db.String())
+    comment = db.Column(db.String(), nullable=False)
     user = db.relationship('User', backref='User')
 
     @staticmethod
     def add(user_id, good_id, comment):
-        comment = Comment()
-        comment.user_id = user_id
-        comment.good_id = good_id
-        comment.score = comment
+        comment_model = Comment()
+        comment_model.user_id = user_id
+        comment_model.good_id = good_id
+        comment_model.comment = comment
 
-        db.session.add(comment)
+        db.session.add(comment_model)
         db.session.commit()

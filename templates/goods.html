@@ -3,7 +3,7 @@
 {% block content %}
 <div class=""
      style="padding-top:80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));justify-items: center;">
-    {% for good in goods + goods + goods + goods %}
+    {% for good in goods %}
     <div class="m-2 card" style="width: 18rem;">
         <img src="{{ url_for('static', filename='photos/' + good.photo) }}" class="card-img-top">
         <div class="card-body">

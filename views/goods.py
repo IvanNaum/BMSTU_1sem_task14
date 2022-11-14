@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 from werkzeug.utils import secure_filename
 
-from app import app, db
+from app import app, db, login_manager
 from forms import GoodsForm
 from models import Good, Like, Comment
 
@@ -18,10 +18,18 @@ def goods_view():
 
 @app.route('/goods/<int:good_id>')
 def good_view(good_id):
+    like = None
     good = Good.query.filter_by(id=good_id).first()
 
-    like = Like.query.filter_by(user_id=current_user.id, good_id=good_id).first().score
-    comments = Comment.query.filter_by(user_id=current_user.id, good_id=good_id)
+    if current_user.is_authenticated:
+        like = Like.query.filter_by(user_id=current_user.id, good_id=good_id).first()
+        if like:
+            like = like.score
+        else:
+            like = 0
+
+    comments = Comment.query.filter_by(good_id=good_id)
+
     good.photo = f'photos/{good.photo}'
 
     return render_template('good.html', good=good, title=good.name, like=like, comments=comments)

@@ -12,8 +12,61 @@ from models import Good, Like, Comment
 
 @app.route('/goods')
 def goods_view():
-    goods = Good.query.all()
-    return render_template('goods.html', goods=goods)
+    manufacturer_par = request.args.get('manufacturer')
+    category_par = request.args.get('category')
+    order_par = request.args.get('order_by')
+
+    filters = (('manufacturer', manufacturer_par), ('category', category_par))
+    filters = dict(filter(lambda x: x[1] and x[1] not in ('Все производители', 'Все категории'), filters))
+
+    categories = [good.category for good in Good.query.all()]
+    manufacturers = [good.manufacturer for good in Good.query.all()]
+
+    score_asc = 'score_asc'
+    score_desc = 'score_desc'
+    orders = {
+        'По названию': Good.name.asc(),
+        'По возрастанию цены': Good.price.asc(),
+        'По убыванию цены': Good.price.desc(),
+        'По возрастанию оценки': score_asc,
+        'По убыванию оценки': score_desc
+    }
+
+    selectors = {
+        'orders': orders.keys(),
+        'manufacturers': ['Все производители'] + manufacturers,
+        'categories': ['Все категории'] + categories,
+    }
+
+    if manufacturer_par in manufacturers:
+        manufacturers.remove(manufacturer_par)
+        selectors['manufacturers'] = [manufacturer_par, 'Все производители', *manufacturers]
+
+    if category_par in categories:
+        categories.remove(category_par)
+        selectors['categories'] = [category_par, 'Все категории', *categories]
+
+    if order_par and order_par in orders.keys():
+        orders_list = list(orders.keys())
+        orders_list.remove(order_par)
+        selectors['orders'] = [order_par, *orders_list]
+    else:
+        order_par = 'По названию'
+
+    if orders[order_par] in (score_desc, score_asc):
+        goods = Good.query.filter_by(**filters).all()
+        goods = sorted(goods,
+                       key=lambda x: (sum([i.score for i in x.likes]) / len(x.likes)) if (len(x.likes) > 0) else 0)
+        if orders[order_par] == score_desc:
+            goods.reverse()
+    else:
+        goods = Good.query.filter_by(**filters).order_by(orders[order_par]).all()
+
+    for i in range(len(goods)):
+        goods[i].like_average = sum([x.score for x in goods[i].likes]) / len(goods[i].likes) if (
+                    len(goods[i].likes) > 0) else 0
+
+    return render_template('goods.html', goods=goods, selectors=selectors)
 
 
 @app.route('/goods/<int:good_id>')
@@ -147,5 +200,4 @@ def comment_view():
 
     return "{'status': 'success'}"
 
-# TODO AJAX add comment
 # TODO AJAX get category

@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 
 from app import db
 
@@ -29,6 +30,8 @@ class Good(db.Model):
     manufacturer = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     photo = db.Column(db.String, nullable=False)
+
+    likes = relationship("Like")
 
     @staticmethod
     def add(name, description, category, manufacturer, price, photo):

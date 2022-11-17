@@ -141,7 +141,6 @@ def delete_good_view(good_id):
     for i in Comment.query.filter_by(good_id=good.id).all():
         db.session.delete(i)
 
-    # TODO delete all comments and likes
     db.session.delete(good)
     db.session.commit()
 

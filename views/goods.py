@@ -136,7 +136,11 @@ def delete_good_view(good_id):
         abort(403)
 
     good = Good.query.filter_by(id=good_id).first()
-    # TODO delete all comments and likes
+    for i in Like.query.filter_by(good_id=good.id).all():
+        db.session.delete(i)
+    for i in Comment.query.filter_by(good_id=good.id).all():
+        db.session.delete(i)
+
     db.session.delete(good)
     db.session.commit()
 

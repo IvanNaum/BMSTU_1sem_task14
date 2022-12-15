@@ -19,8 +19,8 @@ def goods_view():
     filters = (('manufacturer', manufacturer_par), ('category', category_par))
     filters = dict(filter(lambda x: x[1] and x[1] not in ('Все производители', 'Все категории'), filters))
 
-    categories = [good.category for good in Good.query.all()]
-    manufacturers = [good.manufacturer for good in Good.query.all()]
+    categories = list({good.category for good in Good.query.all()})
+    manufacturers = list({good.manufacturer for good in Good.query.all()})
 
     score_asc = 'score_asc'
     score_desc = 'score_desc'
@@ -204,4 +204,3 @@ def comment_view():
 
     return "{'status': 'success'}"
 
-# TODO AJAX get category

@@ -4,7 +4,7 @@
 <div class="center-screen" style="padding-top: 70px;">
     <h1 style="margin-bottom: 2rem">{{ title }}</h1>
     <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-10 col-12">
-        <form method="post" enctype="multipart/form-data" novalidate>
+        <form method="post" enctype="multipart/form-data" novalidate class="text-dark">
             {{ form.hidden_tag() }}
             {{ form_floating(form.name) }}
             {{ form_floating(form.description) }}
@@ -20,7 +20,7 @@
                 {% endfor %}
             </div>
             {{ flashed_messages() }}
-            <button type="submit" class="btn btn-primary mb-4">Добавить</button>
+            <button type="submit" class="btn btn-success mb-4">Добавить</button>
         </form>
     </div>
 </div>

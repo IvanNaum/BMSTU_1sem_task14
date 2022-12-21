@@ -5,9 +5,9 @@ from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 from werkzeug.utils import secure_filename
 
-from app import app, db, login_manager
-from forms import GoodsForm
-from models import Good, Like, Comment
+from application import app, db
+from application.forms import GoodsForm
+from application.models import Good, Like, Comment
 
 
 @app.route('/goods')
@@ -19,8 +19,8 @@ def goods_view():
     filters = (('manufacturer', manufacturer_par), ('category', category_par))
     filters = dict(filter(lambda x: x[1] and x[1] not in ('Все производители', 'Все категории'), filters))
 
-    categories = [good.category for good in Good.query.all()]
-    manufacturers = [good.manufacturer for good in Good.query.all()]
+    categories = sorted(list({good.category for good in Good.query.all()}))
+    manufacturers = sorted(list({good.manufacturer for good in Good.query.all()}))
 
     score_asc = 'score_asc'
     score_desc = 'score_desc'
@@ -64,7 +64,7 @@ def goods_view():
 
     for i in range(len(goods)):
         goods[i].like_average = sum([x.score for x in goods[i].likes]) / len(goods[i].likes) if (
-                    len(goods[i].likes) > 0) else 0
+                len(goods[i].likes) > 0) else 0
 
     return render_template('goods.html', goods=goods, selectors=selectors)
 

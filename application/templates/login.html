@@ -5,7 +5,7 @@
 <div class="center-screen">
     <h1 style="margin-bottom: 2rem">{{ title }}</h1>
     <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-10 col-12">
-        <form method="post" novalidate>
+        <form method="post" novalidate class="text-dark">
             {{ form.hidden_tag() }}
             {{ form_floating(form.login) }}
             {{ form_floating(form.password) }}

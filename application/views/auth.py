@@ -2,9 +2,9 @@ from flask import render_template, flash, redirect, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import app, login_manager, db
-from forms import LoginForm, RegisterForm
-from models import User
+from application import app, login_manager
+from application.forms import LoginForm, RegisterForm
+from application.models import User
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -12,12 +12,9 @@ def login_view():
     form = LoginForm()
 
     if form.validate_on_submit():
-        login = form.login.data
-        password = form.password.data
+        user = User.query.filter_by(login=form.login.data).first()
 
-        user = User.query.filter_by(login=login).first()
-
-        if user and check_password_hash(user.password, password):
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('index'))
 
@@ -38,13 +35,10 @@ def register_view():
         elif not form.check_login():
             flash('Этот логин уже занят')
         else:
-
-            hash_password = generate_password_hash(password)
             User.add(login=login,
-                     email=email, password=hash_password)
+                     email=email, password=generate_password_hash(password))
 
             return redirect(url_for('login_view'))
-
     return render_template('register.html', form=form, title='Регистрация')
 
 

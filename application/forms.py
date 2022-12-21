@@ -5,7 +5,7 @@ from flask_wtf.file import FileRequired
 from wtforms import StringField, PasswordField, SubmitField, EmailField, IntegerField, FileField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 
-from models import User
+from .models import User
 
 data_required = DataRequired('Заполните это поле')
 email = Email('Некорректный email')

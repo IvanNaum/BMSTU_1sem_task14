@@ -1,11 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="display: flex; padding-top:80px;">
+<div style="padding-top:80px;">
+    <div style="display: flex;">
+        <select class="form-select me-2 bg-dark text-white" id="order_by" aria-label="Floating label select example"
+                onChange="update_url()">
+            {% for ord in selectors['orders'] %}
+            <option>{{ ord }}</option>
+            {% endfor %}
+        </select>
+
+        <select class="form-select me-2 bg-dark text-white" id="manufacturer" aria-label="Floating label select example"
+                onChange="update_url()">
+            {% for man in selectors['manufacturers'] %}
+            <option>{{ man }}</option>
+            {% endfor %}
+        </select>
+
+        <select class="form-select bg-dark text-white" id="category" aria-label="Floating label select example"
+                onChange="update_url()">
+            {% for cat in selectors['categories'] %}
+            <option>{{ cat }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
     <div class=""
          style="flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));justify-items: center;">
         {% for good in goods %}
-        <div class="m-2 card" style="width: 18rem;">
+        <div class="m-2 card" style="width: 18rem; background-color:rgba(0, 0, 0, 0.5)">
             <img src="{{ url_for('static', filename='photos/' + good.photo) }}" class="card-img-top">
             <div class="card-body" style="max-height: auto;">
                 <h5 class="card-title">{{ good.name }}</h5>
@@ -26,28 +49,6 @@
             </div>
         </div>
         {% endfor %}
-    </div>
-    <div>
-        <select class="form-select mb-2" id="order_by" aria-label="Floating label select example"
-                onChange="update_url()">
-            {% for ord in selectors['orders'] %}
-            <option>{{ ord }}</option>
-            {% endfor %}
-        </select>
-
-        <select class="form-select mb-2" id="manufacturer" aria-label="Floating label select example"
-                onChange="update_url()">
-            {% for man in selectors['manufacturers'] %}
-            <option>{{ man }}</option>
-            {% endfor %}
-        </select>
-
-        <select class="form-select" id="category" aria-label="Floating label select example"
-                onChange="update_url()">
-            {% for cat in selectors['categories'] %}
-            <option>{{ cat }}</option>
-            {% endfor %}
-        </select>
     </div>
 </div>
 

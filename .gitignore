@@ -8,9 +8,8 @@ venv/
 *.pyc
 __pycache__/
 
-db/
 instance/
-static/photos
+
 
 .pytest_cache/
 .coverage
